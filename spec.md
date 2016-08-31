@@ -1,1 +1,2 @@
-01. Install redux => npm install 
+01. Install redux => npm install react --save
+02.
