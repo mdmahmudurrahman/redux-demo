@@ -100,4 +100,55 @@ console.log(startingValue);
 //        meaning it does not updates/change any valiables outside of itself.
 //     c. Our pure function can't have any asynchronous request, this means
 //        no promises or callbacks in the pure function.
+
+
+// Creating reducer and getting app state: a reducer is basically a function.
+
+// var reducer = (state, action) => {
+//   state = state || {name: "Anonymous"}
+//   return state;
+// };
+//
+// var store = redux.createStore(reducer);
+
+//or
+
+var reducer = (state = {name: "Anonymous"}, action) => {
+  // 1. here the reducer has a default state.
+  // 2. our reducer function always returns a state. State is nothing but a
+  // simple object with some properties
+  return state;
+};
+
+var store = redux.createStore(reducer);
+
+var currentState = store.getState()
+console.log("currentState: ", currentState);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //
