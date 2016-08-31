@@ -7,10 +7,24 @@ var redux = require("redux");
 console.log("Redux tutorial");
 
 var reducer = (state= {searchText: "", showComplete: false, todos: []}, action) => {
-  return state;
-}
+  switch (action.type) {
+    case "CHANGE_SEARCH_TEXT":
+      return {
+        ...state,
+        searchText: action.searchText
+      };
+      default:
+        return state;
+    }
+ };
 
 var store = redux.createStore(reducer);
+console.log("Current state", store.getState());
+store.dispatch(
+  {
+    type: "CHANGE_SEARCH_TEXT",
+    searchText: "text to search"
+  }
+);
 
-var currentState = store.getState();
-console.log(currentState);
+console.log("changed state", store.getState());

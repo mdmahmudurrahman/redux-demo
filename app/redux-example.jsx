@@ -113,17 +113,42 @@ console.log(startingValue);
 
 //or
 
+// var reducer = (state = {name: "Anonymous"}, action) => {
+//   // 1. here the reducer has a default state.
+//   // 2. our reducer function always returns a state. State is nothing but a
+//   // simple object with some properties
+//   return state;
+// };
+//
+// var store = redux.createStore(reducer);
+//
+// var currentState = store.getState()
+// console.log("currentState: ", currentState);
+
+
+
 var reducer = (state = {name: "Anonymous"}, action) => {
-  // 1. here the reducer has a default state.
-  // 2. our reducer function always returns a state. State is nothing but a
-  // simple object with some properties
-  return state;
+  switch (action.type) {
+    case "CHANGE_NAME":
+      return {
+        ...state,
+        name: action.name
+      };
+    default:
+      return state;
+  }
 };
 
 var store = redux.createStore(reducer);
+console.log("Current State: ", store.getState());
 
-var currentState = store.getState()
-console.log("currentState: ", currentState);
+store.dispatch(
+  {
+  type: "CHANGE_NAME",
+  name: "Andrew"
+  }
+);
+console.log("Changed State: ", store.getState());
 
 
 

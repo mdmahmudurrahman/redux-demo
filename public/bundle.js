@@ -21415,6 +21415,8 @@
 
 	"use strict";
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var redux = __webpack_require__(173);
 
 	// -searchText
@@ -21427,13 +21429,24 @@
 	  var state = arguments.length <= 0 || arguments[0] === undefined ? { searchText: "", showComplete: false, todos: [] } : arguments[0];
 	  var action = arguments[1];
 
-	  return state;
+	  switch (action.type) {
+	    case "CHANGE_SEARCH_TEXT":
+	      return _extends({}, state, {
+	        searchText: action.searchText
+	      });
+	    default:
+	      return state;
+	  }
 	};
 
 	var store = redux.createStore(reducer);
+	console.log("Current state", store.getState());
+	store.dispatch({
+	  type: "CHANGE_SEARCH_TEXT",
+	  searchText: "text to search"
+	});
 
-	var currentState = store.getState();
-	console.log(currentState);
+	console.log("changed state", store.getState());
 
 /***/ },
 /* 173 */
