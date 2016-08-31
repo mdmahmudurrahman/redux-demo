@@ -21439,14 +21439,32 @@
 	  }
 	};
 
-	var store = redux.createStore(reducer);
-	console.log("Current state", store.getState());
+	var store = redux.createStore(reducer, redux.compose(window.devToolsExtension ? window.devToolsExtension() : function (f) {
+	  return f;
+	}));
+
+	// Suscribe to changes
+	var unsubscribe = store.subscribe(function () {
+	  var state = store.getState();
+	  console.log("Current state", state);
+	});
+
 	store.dispatch({
 	  type: "CHANGE_SEARCH_TEXT",
 	  searchText: "text to search"
 	});
 
-	console.log("changed state", store.getState());
+	store.dispatch({
+	  type: "CHANGE_SEARCH_TEXT",
+	  searchText: "my text"
+	});
+
+	unsubscribe();
+
+	store.dispatch({
+	  type: "CHANGE_SEARCH_TEXT",
+	  searchText: "Not shown text"
+	});
 
 /***/ },
 /* 173 */

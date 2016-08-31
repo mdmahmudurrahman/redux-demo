@@ -18,8 +18,16 @@ var reducer = (state= {searchText: "", showComplete: false, todos: []}, action) 
     }
  };
 
-var store = redux.createStore(reducer);
-console.log("Current state", store.getState());
+var store = redux.createStore(reducer, redux.compose(
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
+
+// Suscribe to changes
+var unsubscribe = store.subscribe(() => {
+  var state = store.getState();
+  console.log("Current state", state);
+});
+
 store.dispatch(
   {
     type: "CHANGE_SEARCH_TEXT",
@@ -27,4 +35,18 @@ store.dispatch(
   }
 );
 
-console.log("changed state", store.getState());
+store.dispatch(
+  {
+    type: "CHANGE_SEARCH_TEXT",
+    searchText: "my text"
+  }
+);
+
+unsubscribe();
+
+store.dispatch(
+  {
+    type: "CHANGE_SEARCH_TEXT",
+    searchText: "Not shown text"
+  }
+);
