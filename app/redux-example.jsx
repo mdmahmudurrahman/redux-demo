@@ -100,4 +100,4 @@ console.log(startingValue);
 //        meaning it does not updates/change any valiables outside of itself.
 //     c. Our pure function can't have any asynchronous request, this means
 //        no promises or callbacks in the pure function.
-//        
+//
