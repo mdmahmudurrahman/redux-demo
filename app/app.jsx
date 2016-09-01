@@ -6,4 +6,4 @@ ReactDOM.render(<h1>boilerplate app!!</h1>,
 
  // require("./redux-example.jsx");
  // require("./redux-todo-example.jsx");
-  require("./combine-multiple-reducer-example.jsx");
+  require("./creating-action-generator.jsx");
