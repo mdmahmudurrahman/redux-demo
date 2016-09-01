@@ -21587,6 +21587,18 @@
 	          genre: action.genre
 	        }])
 	      });
+	    case "REMOVE_HOBBY":
+	      return _extends({}, state, {
+	        hobbies: state.hobbies.filter(function (hobby) {
+	          return hobby.id !== action.id;
+	        })
+	      });
+	    case "REMOVE_MOVIE":
+	      return _extends({}, state, {
+	        movies: state.movies.filter(function (movie) {
+	          return movie.id !== action.id;
+	        })
+	      });
 	    default:
 	      return state;
 	  }
@@ -21614,9 +21626,26 @@
 	  type: "ADD_HOBBY",
 	  hobby: "running"
 	});
+
+	store.dispatch({
+	  type: "ADD_HOBBY",
+	  hobby: "Playing cricket"
+	});
+	// remove from hobby array
+	store.dispatch({
+	  type: "REMOVE_HOBBY",
+	  id: 2
+	});
+
 	store.dispatch({
 	  type: 'CHANGE_NAME',
 	  name: 'Emily'
+	});
+	// add movie
+	store.dispatch({
+	  type: "ADD_MOVIE",
+	  title: "Lord of the rings",
+	  genre: "Someone"
 	});
 
 	store.dispatch({
@@ -21625,7 +21654,18 @@
 	  genre: "Action"
 	});
 
-	//
+	store.dispatch({
+	  type: "ADD_MOVIE",
+	  title: "Prince of Pharsia",
+	  genre: "Sakil-fg"
+	});
+
+	// remove movie from the array
+
+	store.dispatch({
+	  type: "REMOVE_MOVIE",
+	  id: 3
+	});
 
 /***/ },
 /* 173 */

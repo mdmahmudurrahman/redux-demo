@@ -147,7 +147,7 @@ var reducer = (state = stateDefault, action) => {
       return {
         ...state,
         name: action.name
-      };
+      }
     case "ADD_HOBBY":
       return {
         ...state,
@@ -158,7 +158,7 @@ var reducer = (state = stateDefault, action) => {
             hobby: action.hobby
           }
         ]
-      };
+      }
     case "ADD_MOVIE":
       return {
         ...state,
@@ -170,7 +170,17 @@ var reducer = (state = stateDefault, action) => {
             genre: action.genre
           }
         ]
-      };
+      }
+    case "REMOVE_HOBBY":
+      return {
+        ...state,
+        hobbies: state.hobbies.filter((hobby) => hobby.id !== action.id)
+      }
+    case "REMOVE_MOVIE":
+      return {
+        ...state,
+        movies: state.movies.filter((movie) => movie.id !== action.id)
+      }
     default:
       return state;
   }
@@ -200,10 +210,30 @@ store.dispatch(
     hobby: "running"
   }
 );
+
+store.dispatch(
+  {
+    type: "ADD_HOBBY",
+    hobby: "Playing cricket"
+  }
+);
+// remove from hobby array
+store.dispatch({
+  type: "REMOVE_HOBBY",
+  id: 2,
+});
+
 store.dispatch({
   type: 'CHANGE_NAME',
   name: 'Emily'
 });
+// add movie
+store.dispatch({
+  type: "ADD_MOVIE",
+  title: "Lord of the rings",
+  genre: "Someone"
+});
+
 
 store.dispatch({
   type: "ADD_MOVIE",
@@ -211,6 +241,15 @@ store.dispatch({
   genre: "Action"
 });
 
+store.dispatch({
+  type: "ADD_MOVIE",
+  title: "Prince of Pharsia",
+  genre: "Sakil-fg"
+});
 
+// remove movie from the array
 
-//
+store.dispatch({
+  type: "REMOVE_MOVIE",
+  id: 3
+});
