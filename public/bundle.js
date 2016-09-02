@@ -57,7 +57,7 @@
 
 	// require("./redux-example.jsx");
 	// require("./redux-todo-example.jsx");
-	__webpack_require__(187);
+	__webpack_require__(172);
 
 /***/ },
 /* 1 */
@@ -21411,7 +21411,59 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 172 */,
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var redux = __webpack_require__(173);
+	var axios = __webpack_require__(187);
+	console.log('Starting redux example');
+
+	var actions = __webpack_require__(209);
+	var store = __webpack_require__(210).configure();
+
+	// register all the reducers
+
+	// The combineReducers helper function turns an object whose values are
+	// different reducing functions into a single reducing function you can pass
+	// to createStore.
+	//
+	// The resulting reducer calls every child reducer, and gathers their results
+	// into a single state object. The shape of the state object matches the keys
+	// of the passed reducers.
+
+
+	// Subscribe to changes
+	var unsubscribe = store.subscribe(function () {
+	  var state = store.getState();
+	  console.log("New state:", store.getState());
+	  if (state.map.isFetching) {
+	    document.getElementById("app").innerHTML = "Loading.....";
+	  } else if (state.map.url) {
+	    document.getElementById("app").innerHTML = '<a href="' + state.map.url + '" target="_blank">View your location</a>';
+	  }
+	});
+	// unsubscribe();
+
+	store.dispatch(actions.fetchLocation());
+	store.dispatch(actions.changeName("Andrew"));
+	store.dispatch(actions.addHobby("Running"));
+	store.dispatch(actions.addHobby("Playing cricket"));
+
+	// remove from hobby array
+	store.dispatch(actions.removeHobby(2));
+
+	store.dispatch(actions.changeName("Emily"));
+	// add movie
+	store.dispatch(actions.addMovie("Storm in the..", "some one"));
+	store.dispatch(actions.addMovie("Mad Max", "actttttt"));
+	store.dispatch(actions.addMovie("Prince of Pharsia", "Shakil-fg"));
+
+	// remove movie from the array
+	store.dispatch(actions.removeMovie(3));
+
+/***/ },
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -22267,224 +22319,17 @@
 /* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	var redux = __webpack_require__(173);
-	var axios = __webpack_require__(188);
-	console.log('Starting redux example');
-
-	// Name reducer and action generators
-	// ----------------------------------
-	var nameReducer = function nameReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? "Shakil-fg" : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case "CHANGE_NAME":
-	      return action.name;
-	    default:
-	      return state;
-	  };
-	};
-
-	var changeName = function changeName(name) {
-	  return {
-	    type: "CHANGE_NAME",
-	    name: name
-	  };
-	};
-
-	// Hobbie reducer and action generators
-	// ----------------------------------
-	var nextHobbyId = 1;
-	var hobbiesReducer = function hobbiesReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case "ADD_HOBBY":
-	      return [].concat(_toConsumableArray(state), [{
-	        id: nextHobbyId++,
-	        hobby: action.hobby
-	      }]);
-	    case "REMOVE_HOBBY":
-	      return state.filter(function (hobby) {
-	        return hobby.id !== action.id;
-	      });
-	    default:
-	      return state;
-	  }
-	};
-
-	// Movie reducer and action generators
-	// ----------------------------------
-	var nextMovieId = 1;
-	var moviesReducer = function moviesReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case "ADD_MOVIE":
-	      return [].concat(_toConsumableArray(state), [{
-	        id: nextMovieId++,
-	        title: action.title,
-	        genre: action.genre
-	      }]);
-	    case "REMOVE_MOVIE":
-	      return state.filter(function (movie) {
-	        return movie.id !== action.id;
-	      });
-	    //here state is our movie array, no need to use state.movies.filter
-	    default:
-	      return state;
-	  }
-	};
-
-	// Map reducer and action generators
-	// ----------------------------------
-
-	var mapReducer = function mapReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, url: undefined } : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case "START_LOCATION_FETCH":
-	      return {
-	        isFetching: true,
-	        url: undefined
-	      };
-	    case "COMPLETE_LOCATION_FETCH":
-	      return {
-	        isFetching: false,
-	        url: action.url
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var startLocationFetch = function startLocationFetch() {
-	  return {
-	    type: "START_LOCATION_FETCH"
-	  };
-	};
-
-	var completeLocationFetch = function completeLocationFetch(url) {
-	  return {
-	    type: "COMPLETE_LOCATION_FETCH",
-	    url: url
-	  };
-	};
-
-	var fetchLocation = function fetchLocation() {
-	  store.dispatch(startLocationFetch());
-
-	  axios.get("http://ipinfo.io").then(function (res) {
-	    var location = res.data.loc;
-	    var baseUrl = "http://maps.google.com?q=";
-
-	    store.dispatch(completeLocationFetch(baseUrl + location));
-	  }, function (res) {
-	    alert(res.error);
-	  });
-	};
-
-	var addHobby = function addHobby(Hobby) {
-	  return {
-	    type: "ADD_HOBBY",
-	    hobby: hobby
-	  };
-	};
-
-	var removeHobby = function removeHobby(id) {
-	  return {
-	    type: "REMOVE_HOBBY",
-	    id: id
-	  };
-	};
-
-	var addMovie = function addMovie(title, genre) {
-	  return {
-	    type: "ADD_MOVIE",
-	    title: title,
-	    genre: genre
-	  };
-	};
-
-	var removeMovie = function removeMovie(id) {
-	  return {
-	    type: "REMOVE_MOVIE",
-	    id: id
-	  };
-	};
-
-	// register all the reducers
-
-	// The combineReducers helper function turns an object whose values are
-	// different reducing functions into a single reducing function you can pass
-	// to createStore.
-	//
-	// The resulting reducer calls every child reducer, and gathers their results
-	// into a single state object. The shape of the state object matches the keys
-	// of the passed reducers.
-
-	var reducer = redux.combineReducers({
-	  name: nameReducer,
-	  hobbies: hobbiesReducer,
-	  movies: moviesReducer,
-	  map: mapReducer
-	});
-
-	var store = redux.createStore(reducer, redux.compose(window.devToolsExtension ? window.devToolsExtension() : function (f) {
-	  return f;
-	}));
-
-	// Subscribe to changes
-	var unsubscribe = store.subscribe(function () {
-	  var state = store.getState();
-	  console.log("New state:", store.getState());
-	  if (state.map.isFetching) {
-	    document.getElementById("app").innerHTML = "Loading.....";
-	  } else if (state.map.url) {
-	    document.getElementById("app").innerHTML = '<a href="' + state.map.url + '" target="_blank">View your location</a>';
-	  }
-	});
-	// unsubscribe();
-
-	fetchLocation();
-	store.dispatch(changeName("Andrew"));
-	store.dispatch(addHobby("Running"));
-	store.dispatch(addHobby("Playing cricket"));
-
-	// remove from hobby array
-	store.dispatch(removeHobby(2));
-
-	store.dispatch(changeName("Emily"));
-	// add movie
-	store.dispatch(addMovie("Storm in the..", "some one"));
-	store.dispatch(addMovie("Mad Max", "actttttt"));
-	store.dispatch(addMovie("Prince of Pharsia", "Shakil-fg"));
-
-	// remove movie from the array
-	store.dispatch(removeMovie(3));
+	module.exports = __webpack_require__(188);
 
 /***/ },
 /* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(189);
-
-/***/ },
-/* 189 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var utils = __webpack_require__(190);
-	var bind = __webpack_require__(191);
-	var Axios = __webpack_require__(192);
+	var utils = __webpack_require__(189);
+	var bind = __webpack_require__(190);
+	var Axios = __webpack_require__(191);
 
 	/**
 	 * Create an instance of Axios
@@ -22520,7 +22365,7 @@
 	axios.all = function all(promises) {
 	  return Promise.all(promises);
 	};
-	axios.spread = __webpack_require__(209);
+	axios.spread = __webpack_require__(208);
 
 	module.exports = axios;
 
@@ -22529,12 +22374,12 @@
 
 
 /***/ },
-/* 190 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var bind = __webpack_require__(191);
+	var bind = __webpack_require__(190);
 
 	/*global toString:true*/
 
@@ -22834,7 +22679,7 @@
 
 
 /***/ },
-/* 191 */
+/* 190 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -22851,17 +22696,17 @@
 
 
 /***/ },
-/* 192 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var defaults = __webpack_require__(193);
-	var utils = __webpack_require__(190);
-	var InterceptorManager = __webpack_require__(195);
-	var dispatchRequest = __webpack_require__(196);
-	var isAbsoluteURL = __webpack_require__(207);
-	var combineURLs = __webpack_require__(208);
+	var defaults = __webpack_require__(192);
+	var utils = __webpack_require__(189);
+	var InterceptorManager = __webpack_require__(194);
+	var dispatchRequest = __webpack_require__(195);
+	var isAbsoluteURL = __webpack_require__(206);
+	var combineURLs = __webpack_require__(207);
 
 	/**
 	 * Create a new instance of Axios
@@ -22942,13 +22787,13 @@
 
 
 /***/ },
-/* 193 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
-	var normalizeHeaderName = __webpack_require__(194);
+	var utils = __webpack_require__(189);
+	var normalizeHeaderName = __webpack_require__(193);
 
 	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 	var DEFAULT_CONTENT_TYPE = {
@@ -23020,12 +22865,12 @@
 
 
 /***/ },
-/* 194 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
+	var utils = __webpack_require__(189);
 
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -23038,12 +22883,12 @@
 
 
 /***/ },
-/* 195 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
+	var utils = __webpack_require__(189);
 
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -23096,13 +22941,13 @@
 
 
 /***/ },
-/* 196 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(190);
-	var transformData = __webpack_require__(197);
+	var utils = __webpack_require__(189);
+	var transformData = __webpack_require__(196);
 
 	/**
 	 * Dispatch a request to the server using whichever adapter
@@ -23143,10 +22988,10 @@
 	    adapter = config.adapter;
 	  } else if (typeof XMLHttpRequest !== 'undefined') {
 	    // For browsers use XHR adapter
-	    adapter = __webpack_require__(198);
+	    adapter = __webpack_require__(197);
 	  } else if (typeof process !== 'undefined') {
 	    // For node use HTTP adapter
-	    adapter = __webpack_require__(198);
+	    adapter = __webpack_require__(197);
 	  }
 
 	  return Promise.resolve(config)
@@ -23178,12 +23023,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 197 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
+	var utils = __webpack_require__(189);
 
 	/**
 	 * Transform the data for a request or a response
@@ -23204,18 +23049,18 @@
 
 
 /***/ },
-/* 198 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(190);
-	var settle = __webpack_require__(199);
-	var buildURL = __webpack_require__(202);
-	var parseHeaders = __webpack_require__(203);
-	var isURLSameOrigin = __webpack_require__(204);
-	var createError = __webpack_require__(200);
-	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(205);
+	var utils = __webpack_require__(189);
+	var settle = __webpack_require__(198);
+	var buildURL = __webpack_require__(201);
+	var parseHeaders = __webpack_require__(202);
+	var isURLSameOrigin = __webpack_require__(203);
+	var createError = __webpack_require__(199);
+	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(204);
 
 	module.exports = function xhrAdapter(config) {
 	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -23309,7 +23154,7 @@
 	    // This is only done if running in a standard browser environment.
 	    // Specifically not if we're in a web worker, or react-native.
 	    if (utils.isStandardBrowserEnv()) {
-	      var cookies = __webpack_require__(206);
+	      var cookies = __webpack_require__(205);
 
 	      // Add xsrf header
 	      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -23373,12 +23218,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 199 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createError = __webpack_require__(200);
+	var createError = __webpack_require__(199);
 
 	/**
 	 * Resolve or reject a Promise based on response status.
@@ -23404,12 +23249,12 @@
 
 
 /***/ },
-/* 200 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var enhanceError = __webpack_require__(201);
+	var enhanceError = __webpack_require__(200);
 
 	/**
 	 * Create an Error with the specified message, config, error code, and response.
@@ -23427,7 +23272,7 @@
 
 
 /***/ },
-/* 201 */
+/* 200 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23452,12 +23297,12 @@
 
 
 /***/ },
-/* 202 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
+	var utils = __webpack_require__(189);
 
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -23526,12 +23371,12 @@
 
 
 /***/ },
-/* 203 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
+	var utils = __webpack_require__(189);
 
 	/**
 	 * Parse headers into an object
@@ -23569,12 +23414,12 @@
 
 
 /***/ },
-/* 204 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
+	var utils = __webpack_require__(189);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -23643,7 +23488,7 @@
 
 
 /***/ },
-/* 205 */
+/* 204 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23685,12 +23530,12 @@
 
 
 /***/ },
-/* 206 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(190);
+	var utils = __webpack_require__(189);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -23744,7 +23589,7 @@
 
 
 /***/ },
-/* 207 */
+/* 206 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23764,7 +23609,7 @@
 
 
 /***/ },
-/* 208 */
+/* 207 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23782,7 +23627,7 @@
 
 
 /***/ },
-/* 209 */
+/* 208 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23813,6 +23658,245 @@
 	  };
 	};
 
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var axios = __webpack_require__(187);
+
+	var startLocationFetch = exports.startLocationFetch = function startLocationFetch() {
+	  return {
+	    type: "START_LOCATION_FETCH"
+	  };
+	};
+
+	var completeLocationFetch = exports.completeLocationFetch = function completeLocationFetch(url) {
+	  return {
+	    type: "COMPLETE_LOCATION_FETCH",
+	    url: url
+	  };
+	};
+
+	var fetchLocation = exports.fetchLocation = function fetchLocation() {
+	  return function (dispatch, getState) {
+	    dispatch(startLocationFetch());
+
+	    axios.get("http://ipinfo.io").then(function (res) {
+	      var location = res.data.loc;
+	      var baseUrl = "http://maps.google.com?q=";
+
+	      dispatch(completeLocationFetch(baseUrl + location));
+	    }, function (res) {
+	      alert(res.error);
+	    });
+	  };
+	};
+
+	var changeName = exports.changeName = function changeName(name) {
+	  return {
+	    type: 'CHANGE_NAME',
+	    name: name
+	  };
+	};
+
+	var addHobby = exports.addHobby = function addHobby(hobby) {
+	  return {
+	    type: "ADD_HOBBY",
+	    hobby: hobby
+	  };
+	};
+
+	var removeHobby = exports.removeHobby = function removeHobby(id) {
+	  return {
+	    type: "REMOVE_HOBBY",
+	    id: id
+	  };
+	};
+
+	var addMovie = exports.addMovie = function addMovie(title, genre) {
+	  return {
+	    type: "ADD_MOVIE",
+	    title: title,
+	    genre: genre
+	  };
+	};
+
+	var removeMovie = exports.removeMovie = function removeMovie(id) {
+	  return {
+	    type: "REMOVE_MOVIE",
+	    id: id
+	  };
+	};
+
+/***/ },
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var redux = __webpack_require__(173);
+	var thunk = __webpack_require__(211).default; // to pull the default property we use default
+	// loading reducers
+
+	var _require = __webpack_require__(212);
+
+	var nameReducer = _require.nameReducer;
+	var hobbiesReducer = _require.hobbiesReducer;
+	var moviesReducer = _require.moviesReducer;
+	var mapReducer = _require.mapReducer;
+	var configure = exports.configure = function configure() {
+	  var reducer = redux.combineReducers({
+	    name: nameReducer,
+	    hobbies: hobbiesReducer,
+	    movies: moviesReducer,
+	    map: mapReducer
+	  });
+
+	  var store = redux.createStore(reducer, redux.compose(redux.applyMiddleware(thunk), window.devToolsExtension ? window.devToolsExtension() : function (f) {
+	    return f;
+	  }));
+	  // this middleware teaches redux how to work with actions that are objects
+	  return store;
+	};
+
+/***/ },
+/* 211 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	function createThunkMiddleware(extraArgument) {
+	  return function (_ref) {
+	    var dispatch = _ref.dispatch;
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        if (typeof action === 'function') {
+	          return action(dispatch, getState, extraArgument);
+	        }
+
+	        return next(action);
+	      };
+	    };
+	  };
+	}
+
+	var thunk = createThunkMiddleware();
+	thunk.withExtraArgument = createThunkMiddleware;
+
+	exports['default'] = thunk;
+
+/***/ },
+/* 212 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	// Name reducer and action generators
+	// ----------------------------------
+	var nameReducer = exports.nameReducer = function nameReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? "Shakil-fg" : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case "CHANGE_NAME":
+	      return action.name;
+	    default:
+	      return state;
+	  };
+	};
+
+	var changeName = exports.changeName = function changeName(name) {
+	  return {
+	    type: "CHANGE_NAME",
+	    name: name
+	  };
+	};
+
+	// Hobbie reducer and action generators
+	// ----------------------------------
+	var nextHobbyId = 1;
+	var hobbiesReducer = exports.hobbiesReducer = function hobbiesReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case "ADD_HOBBY":
+	      return [].concat(_toConsumableArray(state), [{
+	        id: nextHobbyId++,
+	        hobby: action.hobby
+	      }]);
+	    case "REMOVE_HOBBY":
+	      return state.filter(function (hobby) {
+	        return hobby.id !== action.id;
+	      });
+	    default:
+	      return state;
+	  }
+	};
+
+	// Movie reducer and action generators
+	// ----------------------------------
+	var nextMovieId = 1;
+	var moviesReducer = exports.moviesReducer = function moviesReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case "ADD_MOVIE":
+	      return [].concat(_toConsumableArray(state), [{
+	        id: nextMovieId++,
+	        title: action.title,
+	        genre: action.genre
+	      }]);
+	    case "REMOVE_MOVIE":
+	      return state.filter(function (movie) {
+	        return movie.id !== action.id;
+	      });
+	    //here state is our movie array, no need to use state.movies.filter
+	    default:
+	      return state;
+	  }
+	};
+
+	// Map reducer and action generators
+	// ----------------------------------
+
+	var mapReducer = exports.mapReducer = function mapReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, url: undefined } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case "START_LOCATION_FETCH":
+	      return {
+	        isFetching: true,
+	        url: undefined
+	      };
+	    case "COMPLETE_LOCATION_FETCH":
+	      return {
+	        isFetching: false,
+	        url: action.url
+	      };
+	    default:
+	      return state;
+	  }
+	};
 
 /***/ }
 /******/ ]);
